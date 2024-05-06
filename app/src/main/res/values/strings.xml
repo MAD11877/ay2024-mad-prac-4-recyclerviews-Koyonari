@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">Practical4</string>
+    <string name="title">MAD Practical</string>
+    <string name="lorem">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</string>
+    <string name="follow">FOLLOW</string>
+    <string name="message">MESSAGE</string>
+</resources>
