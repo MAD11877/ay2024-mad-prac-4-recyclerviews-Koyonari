@@ -1,9 +1,12 @@
 package sg.edu.np.mad.madpractical4;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
@@ -12,46 +15,55 @@ import androidx.core.view.WindowInsetsCompat;
 
 public class MainActivity extends AppCompatActivity {
 
+    private Button buttonFollow;
+    private TextView tvName, tvDescription;
+    private boolean followed;
+    private User currentUser;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main);
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
-            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
-            return insets;
-        });
 
-        // Intialize a new User object
-        User user = new User("John Doe", "MAD Developer", 1, false);
+        // Initialize views
+        tvName = findViewById(R.id.tvName);
+        tvDescription = findViewById(R.id.tvDescription);
+        buttonFollow = findViewById(R.id.btnFollow);
 
-        // Get the TextViews and Button from Layout
-        TextView tvName = findViewById(R.id.tvName);
-        TextView tvDescription = findViewById(R.id.tvDescription);
-        Button btnFollow = findViewById(R.id.btnFollow);
-
-        // Onclick listener to change button text and show toast
-        btnFollow.setOnClickListener(v -> {
-            String newButtonText;
-            CharSequence toastText;
-
-            if (btnFollow.getText().toString().equals("Follow")) {
-                newButtonText = "Unfollow";
-                toastText = "Followed";
-            } else {
-                newButtonText = "Follow";
-                toastText = "Unfollowed";
+        // Get user information from intent
+        Intent intent = getIntent();
+        if (intent != null) {
+            currentUser = (User) intent.getSerializableExtra("user");
+            if (currentUser != null) {
+                // Set user information
+                tvName.setText(currentUser.getName());
+                tvDescription.setText(currentUser.getDescription());
+                // Set initial follow state
+                followed = currentUser.getFollowed();
+                setupFollowButton();
             }
+        }
+    }
 
-            btnFollow.setText(newButtonText);
-            int duration = Toast.LENGTH_SHORT;
-            Toast.makeText(this, toastText, duration).show();
+    private void setupFollowButton() {
+        buttonFollow.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String newButtonText;
+                CharSequence toastText;
+
+                if (buttonFollow.getText().toString().equals("Follow")) {
+                    newButtonText = "Unfollow";
+                    toastText = "Followed";
+                } else {
+                    newButtonText = "Follow";
+                    toastText = "Unfollowed";
+                }
+
+                buttonFollow.setText(newButtonText);
+                int duration = Toast.LENGTH_SHORT;
+                Toast.makeText(MainActivity.this, toastText, duration).show();
+            }
         });
-
-        // Set the TextViews with the User's name, description, default button message
-        int randomInteger = getIntent().getIntExtra("randomInteger", 0);
-        tvName.setText(user.name + " " + randomInteger);
-        tvDescription.setText(user.description);
     }
 }

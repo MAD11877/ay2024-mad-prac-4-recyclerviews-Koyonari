@@ -1,23 +1,27 @@
 package sg.edu.np.mad.madpractical4;
 
-import android.os.Bundle;
-import androidx.appcompat.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.os.Bundle;
+import android.view.View;
 import android.widget.ImageView;
-import java.util.Random;
+
 import androidx.activity.EdgeToEdge;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
-import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
-import android.content.Intent;
-import java.util.ArrayList;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.util.ArrayList;
+import java.util.Random;
 
 public class ListActivity extends AppCompatActivity {
+    private ArrayList<User> list;
+    private ImageView imageView;
+    private UserAdapter userAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,55 +33,52 @@ public class ListActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
-        //Create a list of 20 User randomized objects
-        ArrayList<User> users = new ArrayList<User>();
-        for (int i = 0; i < 20; i++){
-            int num = new Random().nextInt(999999999);
-            int dnum = new Random().nextInt(999999999);
-            int inum = new Random().nextInt(99999);
-            String nm = "Name " + num;
-            String description = "Description " + dnum;
-            Boolean follow = new Random().nextBoolean();
-            User user = new User(nm, description, inum, follow);
-            users.add(user);
-        };
 
-        //RecyclerView
-        UserAdapter userAdapter = new UserAdapter(users, this);
+        //Creating users
+        generateRandomUsers();
+        // Applying recycler view
         RecyclerView recyclerView = findViewById(R.id.recyclerView);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
-        recyclerView.setItemAnimator(new DefaultItemAnimator());
+        userAdapter = new UserAdapter(list, this);
         recyclerView.setAdapter(userAdapter);
 
-        layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
-        /*
-        ImageView btn = findViewById(R.id.centerlogo);
-        btn.setOnClickListener(v -> {
-            // Create the object of AlertDialog Builder class
-            AlertDialog.Builder builder = new AlertDialog.Builder(ListActivity.this);
-            builder.setMessage("MADness");
-            builder.setTitle("Profile");
-            // Set Cancelable false for when the user clicks on the outside the Dialog Box then it will remain show
-            builder.setCancelable(true);
-            // Set the Negative button with No name Lambda OnClickListener method is use of DialogInterface interface.
-            builder.setNegativeButton("Close", (DialogInterface.OnClickListener) (dialog, which) -> {
-                finish();
-            });
-            // Set the positive button with yes name Lambda OnClickListener method is use of DialogInterface interface.
-            builder.setPositiveButton("View", (DialogInterface.OnClickListener) (dialog, which) -> {
-                dialog.cancel();
-                int rnum = new Random().nextInt(99999);
-                Intent intent = new Intent(ListActivity.this, MainActivity.class);
-                intent.putExtra("randomInteger", rnum); // Pass random integer as extra
-                startActivity(intent); // Launch MainActivity
-            });
-            // Create the Alert dialog
-            AlertDialog alertDialog = builder.create();
-            // Show the Alert Dialog box
-            alertDialog.show();
-        });
+    }
 
-         */
+    // Method to generate random users
+    private void generateRandomUsers() {
+        list = new ArrayList<>();
+        for (int i = 1; i <= 20; i++) {
+            String name = generateRandomName();
+            String description = generateRandomDescription();
+            boolean followed = generateRandomFollowedStatus();
+
+            // Create user object and add to the list
+            User user = new User(name, description, i, followed);
+            list.add(user);
+        }
+    }
+
+
+    // Generate a random name with appended random integers
+    private String generateRandomName() {
+        String[] names = {"Name"};
+        Random random = new Random();
+        int randomNumber = random.nextInt(9999999); // Generates random integer between 0 and 9999999
+        return names[0] + randomNumber;
+    }
+
+    // Generate a random description with appended random integers
+    private String generateRandomDescription() {
+        String[] descriptions = {"Description"};
+        Random random = new Random();
+        int randomNumber = random.nextInt(9999999); // Generates random integer between 0 and 9999999
+        return descriptions[0] + randomNumber;
+    }
+
+    // Generate a random followed status
+    private boolean generateRandomFollowedStatus() {
+        Random random = new Random();
+        return random.nextBoolean();
     }
 }

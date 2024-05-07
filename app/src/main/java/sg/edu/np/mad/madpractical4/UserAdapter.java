@@ -1,27 +1,45 @@
 package sg.edu.np.mad.madpractical4;
 
-import androidx.recyclerview.widget.RecyclerView;
-import java.util.ArrayList;
-import android.view.ViewGroup;
-import android.view.View;
 import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
+
+import java.util.ArrayList;
+import java.util.List;
+public class UserAdapter extends RecyclerView.Adapter<UserViewHolder> {
+    private ArrayList<User> userList;
+    private ListActivity activity;
+
+    public UserAdapter(ArrayList<User> userList, ListActivity activity) {
+        this.userList = userList;
+        this.activity = activity;
+    }
+
+    @NonNull
+    @Override
+    public UserViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        View view;
+        if (userList.get(viewType).getName().endsWith("7")) {
+            // Inflate layout for names ending with 7
+            view = LayoutInflater.from(parent.getContext()).inflate(R.layout.custom_activity_list_image, parent, false);
+        } else {
+            // Inflate default layout
+            view = LayoutInflater.from(parent.getContext()).inflate(R.layout.custom_activity_list, parent, false);
+        }
+        return new UserViewHolder(view);
+    }
 
 
-public class UserAdapter extends RecyclerView.Adapter<UserViewHolder>{
-    private ArrayList<User> list_objects;
+    @Override
+    public void onBindViewHolder(@NonNull UserViewHolder holder, int position) {
+        User currentUser = userList.get(position);
+        holder.bind(currentUser);
+    }
 
-    public UserAdapter(ArrayList<User> list_objects, ListActivity activity){
-        this.list_objects = list_objects;
+    @Override
+    public int getItemCount() {
+        return userList.size();
     }
-    public UserViewHolder onCreateViewHolder(ViewGroup parent, int viewType){
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.custom_activity_list, parent, false);
-        UserViewHolder holder = new UserViewHolder(view);
-        return holder;
-    }
-    public void onBindViewHolder(UserViewHolder holder, int position){
-        User list_items = list_objects.get(position);
-        holder.name.setText(list_items.name);
-        holder.description.setText(list_items.description);
-    }
-    public int getItemCount() {return list_objects.size();}
 }
